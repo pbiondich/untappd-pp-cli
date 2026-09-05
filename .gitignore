@@ -1,0 +1,11 @@
+/bin/
+/dist/
+/build/
+*.exe
+*.test
+coverage.out
+.idea/
+.vscode/
+*.db
+*.sqlite
+.env

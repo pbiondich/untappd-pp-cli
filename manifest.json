@@ -1,0 +1,43 @@
+{
+  "manifest_version": "0.3",
+  "name": "untappd-pp-mcp",
+  "display_name": "Untappd",
+  "version": "0.1.0",
+  "description": "Untappd isn't just a check-in social network. It's a public beer intelligence layer: global ratings, style, ABV, IBU, and check-in volume that agents can query without the closed official API.",
+  "author": {
+    "name": "CLI Printing Press"
+  },
+  "license": "Apache-2.0",
+  "server": {
+    "type": "binary",
+    "entry_point": "bin/untappd-pp-mcp",
+    "mcp_config": {
+      "command": "${__dirname}/bin/untappd-pp-mcp",
+      "args": [],
+      "env": {
+        "UNTAPPD_BASE_URL": "${user_config.untappd_base_url}",
+        "UNTAPPD_USER_AGENT": "${user_config.untappd_user_agent}"
+      }
+    }
+  },
+  "user_config": {
+    "untappd_base_url": {
+      "type": "string",
+      "title": "UNTAPPD_BASE_URL",
+      "description": "Optional. Sets UNTAPPD_BASE_URL for the Untappd MCP server. Per-instance, non-secret setting; not a credential."
+    },
+    "untappd_user_agent": {
+      "type": "string",
+      "title": "UNTAPPD_USER_AGENT",
+      "description": "Optional. Sets UNTAPPD_USER_AGENT for the Untappd MCP server. Per-instance, non-secret setting; not a credential."
+    }
+  },
+  "compatibility": {
+    "claude_desktop": ">=1.0.0",
+    "platforms": [
+      "darwin",
+      "linux",
+      "win32"
+    ]
+  }
+}

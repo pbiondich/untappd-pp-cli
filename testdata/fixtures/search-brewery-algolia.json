@@ -1,0 +1,16 @@
+{
+  "hits": [
+    {
+      "brewery_id": 23570,
+      "brewery_name": "Hop Butcher For The World",
+      "brewery_beer_count": 733,
+      "brewery_page_url": "/HopButcher",
+      "brewery_city": "Chicago",
+      "brewery_state": "IL",
+      "brewery_country": "United States",
+      "brewery_type": "Micro Brewery",
+      "objectID": "23570"
+    }
+  ],
+  "nbHits": 1
+}
