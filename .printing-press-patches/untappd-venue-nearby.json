@@ -1,0 +1,24 @@
+{
+  "schema_version": 2,
+  "id": "untappd-venue-nearby",
+  "applied_at": "2026-09-05",
+  "base_run_id": "20260905-010436-579600af",
+  "base_printing_press_version": "4.31.7",
+  "summary": "feat(untappd): venue search, venue get, top-beers, and nearby geosearch",
+  "reason": "The printed beer/brewery CLI cannot answer near-me / near-hotel questions. Untappd already publishes a venue Algolia index with _geoloc; this novel live surface uses that index plus OSM Photon without the closed official API.",
+  "files": [
+    "internal/cli/venue.go",
+    "internal/cli/search.go",
+    "internal/cli/aliases.go",
+    "internal/untappd/venue.go",
+    "internal/untappd/venue_test.go"
+  ],
+  "call_sites": [
+    "newVenueCmd(",
+    "newNearbyCmd(",
+    "runNearby(",
+    "NormalizeVenueHits("
+  ],
+  "validated_outcome": "go test ./... passes offline; live nearby --near Elliot Park Hotel Minneapolis returns venues with popularity and null venue ratings",
+  "findings_addressed": ["venue-nearby-mvp"]
+}

@@ -1,0 +1,43 @@
+{
+  "hits": [
+    {
+      "venue_id": 8255451,
+      "venue_name": "Elliot Park Hotel, Autograph Collection",
+      "venue_slug": "elliot-park-hotel-autograph-collection",
+      "venue_primary_category": "Travel and Transportation",
+      "venue_full_address": "823 5th ave s minneapolis mn united states",
+      "venue_address": "823 5th Ave S",
+      "venue_city": "Minneapolis",
+      "venue_state": "MN",
+      "venue_country": "United States",
+      "popularity": 240,
+      "popularity_30": 3,
+      "is_closed": 0,
+      "has_beer": 0,
+      "_geoloc": {
+        "lat": 44.972332,
+        "lng": -93.2663956
+      }
+    },
+    {
+      "venue_id": 797147,
+      "venue_name": "Elliot Norton Park",
+      "venue_slug": "elliot-norton-park",
+      "venue_primary_category": "Landmarks and Outdoors",
+      "venue_full_address": "295 tremont st boston ma united states",
+      "venue_address": "295 Tremont St",
+      "venue_city": "Boston",
+      "venue_state": "MA",
+      "venue_country": "United States",
+      "popularity": 64,
+      "popularity_30": 0,
+      "is_closed": 0,
+      "has_beer": 0,
+      "_geoloc": {
+        "lat": 42.348877,
+        "lng": -71.0662079
+      }
+    }
+  ],
+  "nbHits": 26
+}

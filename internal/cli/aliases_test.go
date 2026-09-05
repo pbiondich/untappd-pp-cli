@@ -41,6 +41,18 @@ func TestRewriteUserFacingArgs(t *testing.T) {
 			[]string{"untappd-pp-cli", "doctor"},
 			[]string{"untappd-pp-cli", "doctor"},
 		},
+		{
+			[]string{"untappd-pp-cli", "venue", "8255451", "--agent"},
+			[]string{"untappd-pp-cli", "venue", "get", "8255451", "--agent"},
+		},
+		{
+			[]string{"untappd-pp-cli", "venue", "2714", "top-beers", "--agent"},
+			[]string{"untappd-pp-cli", "venue", "top-beers", "2714", "--agent"},
+		},
+		{
+			[]string{"untappd-pp-cli", "venue", "search", "Elliot Park"},
+			[]string{"untappd-pp-cli", "venue", "search", "--query", "Elliot Park"},
+		},
 	}
 	for _, tc := range cases {
 		got := RewriteUserFacingArgs(tc.in)

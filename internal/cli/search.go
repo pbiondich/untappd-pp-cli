@@ -17,14 +17,16 @@ func init() {
 func newSearchCmd(flags *rootFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "search",
-		Short: "Search public Untappd beers or breweries.",
+		Short: "Search public Untappd beers, breweries, or venues.",
 		Example: `  untappd-pp-cli search beer "Hop Butcher Put On the Glasses" --agent
-  untappd-pp-cli search brewery "Hop Butcher" --agent`,
+  untappd-pp-cli search brewery "Hop Butcher" --agent
+  untappd-pp-cli search venue "Elliot Park" --agent`,
 		Annotations: map[string]string{"mcp:read-only": "true", "pp:parent-group": "true"},
 		RunE:        parentNoSubcommandRunE(flags),
 	}
 	cmd.AddCommand(newSearchBeerCmd(flags))
 	cmd.AddCommand(newSearchBreweryCmd(flags))
+	cmd.AddCommand(newSearchVenueCmd(flags))
 	return cmd
 }
 
@@ -106,6 +108,41 @@ func newSearchBreweryCmd(flags *rootFlags) *cobra.Command {
 		},
 	}
 	cmd.Flags().StringVar(&query, "query", "", "Brewery search query.")
+	cmd.Flags().IntVar(&limit, "limit", 10, "Max matches to return (polite default 10).")
+	return cmd
+}
+
+func newSearchVenueCmd(flags *rootFlags) *cobra.Command {
+	var query string
+	var limit int
+	cmd := &cobra.Command{
+		Use:     "venue [query]",
+		Short:   "Search public venues (Algolia venue index published on untappd.com/search).",
+		Example: "  untappd-pp-cli search venue \"Elliot Park\" --agent",
+		Annotations: map[string]string{
+			"pp:endpoint": "venue.search", "pp:method": "POST",
+			"mcp:read-only": "true", "pp:requires-input": "true",
+		},
+		RunE: func(cmd *cobra.Command, args []string) error {
+			q, err := searchQueryFrom(cmd, args, query)
+			if err != nil {
+				return usageErr(err)
+			}
+			c, err := flags.newClient()
+			if err != nil {
+				return err
+			}
+			if flags.dryRun {
+				return printOutputWithFlagsMeta(cmd.OutOrStdout(), []byte(`{"dry_run":true}`), flags, map[string]any{"source": "dry-run"}, venueCompactFields())
+			}
+			data, err := runVenueSearch(cmd.Context(), c, q, searchLimitFromFlags(cmd, limit, limit))
+			if err != nil {
+				return classifyAPIError(cmd.OutOrStdout(), err, flags)
+			}
+			return printSearchResults(cmd, flags, data)
+		},
+	}
+	cmd.Flags().StringVar(&query, "query", "", "Venue search query.")
 	cmd.Flags().IntVar(&limit, "limit", 10, "Max matches to return (polite default 10).")
 	return cmd
 }

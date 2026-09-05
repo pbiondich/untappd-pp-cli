@@ -66,6 +66,7 @@ This checks your configuration.
 ```bash
 untappd-pp-cli search beer "Cool Bay Hop Butcher" --agent
 untappd-pp-cli beer 4384886 --agent
+untappd-pp-cli nearby --near "Elliot Park Hotel, Minneapolis" --agent
 ```
 
 ## Usage
@@ -138,6 +139,21 @@ Public brewery search and beer lists with ratings when Untappd publishes them.
 - **`untappd-pp-cli brewery search "Hop Butcher"`** — brewery matches
 - **`untappd-pp-cli brewery HopButcher beers`** / **`untappd-pp-cli brewery beers HopButcher`** — beer list with ratings when available
 - **`untappd-pp-cli brewery 23570`** / **`untappd-pp-cli brewery get 23570`** — brewery page
+
+### venue / nearby
+
+Public venues via Untappd's published Algolia `venue` index (includes `_geoloc`). Place strings are resolved first as an Untappd venue, then via OSM Photon. Nominatim is not required. Nearby ranks by Untappd **popularity** (check-in volume), not an invented star rating — `rating` stays null unless a beer menu publishes a global beer score.
+
+```bash
+untappd-pp-cli venue search "Elliot Park" --agent
+untappd-pp-cli venue search --near "Elliot Park Hotel, Minneapolis" --agent
+untappd-pp-cli venue 8255451 --agent
+untappd-pp-cli venue 2714 top-beers --agent
+untappd-pp-cli nearby --near "Elliot Park Hotel, Minneapolis" --radius-mi 2 --agent
+untappd-pp-cli nearby --lat 44.972332 --lng -93.266396 --radius-mi 2 --sort recent --agent
+```
+
+`--beer-only` defaults to true on `nearby` so the list is places Untappd marks as having beer.
 
 ### lookup
 

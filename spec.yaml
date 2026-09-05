@@ -24,6 +24,9 @@ learn:
   stopwords:
     - beer
     - brewery
+    - venue
+    - nearby
+    - hotel
     - untappd
   synonyms:
     "hazy ipa": "ipa - new england / hazy"
@@ -145,6 +148,63 @@ resources:
           type: array
           item: BeerListItem
 
+  venue:
+    description: "Public venues and nearby search — name, address, lat/lng, Untappd popularity, and on-menu beers when the venue page publishes them. Venue-level ratings stay null unless Untappd publishes a score."
+    endpoints:
+      search:
+        method: POST
+        path: "/1/indexes/venue/query"
+        base_url: "https://9WBO4RQ3HO-dsn.algolia.net"
+        mutation: false
+        description: "Search public venues via Untappd's frontend Algolia venue index."
+        example: "  untappd-pp-cli venue search \"Elliot Park\" --agent"
+        happy_args: "--query=Elliot Park;--limit=5"
+        body:
+          properties:
+            query:
+              type: string
+              required: true
+              description: "Venue search query."
+            hitsPerPage:
+              flag_name: limit
+              type: int
+              default: 10
+              description: "Max matches to return."
+        response:
+          type: array
+          item: Venue
+        response_path: hits
+        response_format: json
+      get:
+        method: GET
+        path: "/venue/{id}"
+        description: "Fetch a public venue page by numeric id (redirects to /v/{slug}/{id})."
+        example: "  untappd-pp-cli venue 8255451 --agent"
+        happy_args: "id=8255451"
+        params:
+          - name: id
+            type: string
+            required: true
+            positional: true
+            description: "Untappd venue id or slug."
+        response_format: html
+        html_extract:
+          mode: page
+        response:
+          type: object
+          item: Venue
+      nearby:
+        method: POST
+        path: "/1/indexes/venue/query"
+        base_url: "https://9WBO4RQ3HO-dsn.algolia.net"
+        mutation: false
+        description: "Venues near a lat/lng or geocoded place, ranked by Untappd popularity (not an invented star rating)."
+        example: "  untappd-pp-cli nearby --near \"Elliot Park Hotel, Minneapolis\" --agent"
+        happy_args: "--near=Elliot Park Hotel, Minneapolis;--radius-mi=2;--limit=5"
+        response:
+          type: object
+          item: NearbyResult
+
 types:
   BeerSearchHit:
     fields:
@@ -264,3 +324,47 @@ types:
         type: bool
       - name: url
         type: string
+  Venue:
+    fields:
+      - name: id
+        type: int
+      - name: slug
+        type: string
+      - name: name
+        type: string
+      - name: category
+        type: string
+      - name: address
+        type: string
+      - name: city
+        type: string
+      - name: state
+        type: string
+      - name: lat
+        type: float
+      - name: lng
+        type: float
+      - name: popularity
+        type: int
+      - name: distance_mi
+        type: float
+      - name: has_beer
+        type: bool
+      - name: rating
+        type: float
+      - name: rating_present
+        type: bool
+      - name: rating_note
+        type: string
+      - name: url
+        type: string
+  NearbyResult:
+    fields:
+      - name: origin
+        type: object
+      - name: radius_mi
+        type: float
+      - name: sort
+        type: string
+      - name: venues
+        type: array

@@ -57,6 +57,16 @@ Do not activate this CLI for requests that require creating, updating, deleting,
 
 - `untappd-pp-cli lookup "Put On the Glasses" "Cool Bay" --brewery "Hop Butcher" --agent`
 
+**venue / nearby** — Places to drink near a hotel or lat/lng. Uses the public Algolia `venue` index (`_geoloc`) plus OSM Photon when the place is not already an Untappd venue.
+
+- `untappd-pp-cli venue search "Elliot Park" --agent`
+- `untappd-pp-cli venue 8255451 --agent` — address and lat/lng; venue-level `rating` is null unless Untappd publishes one
+- `untappd-pp-cli venue 2714 top-beers --agent` — on-menu beers with global beer ratings when present
+- `untappd-pp-cli nearby --near "Elliot Park Hotel, Minneapolis" --radius-mi 2 --agent`
+- `untappd-pp-cli nearby --lat 44.972332 --lng -93.266396 --agent`
+
+Nearby sorts by Untappd popularity (all-time check-in volume) by default (`--sort recent|distance`). That is not a star rating. Do not invent venue scores.
+
 Never invent a rating. If Untappd has no public score, `rating` is `null`, `rating_present` is `false`, and `rating_note` explains that.
 
 
