@@ -219,7 +219,7 @@ Exit codes: `0` success, `2` usage error, `3` not found, `5` API error, `7` rate
 untappd-pp-cli doctor
 ```
 
-Verifies configuration and connectivity to the API.
+Verifies configuration and that public Untappd pages are reachable (not the closed official developer API).
 
 ## Configuration
 
@@ -229,8 +229,9 @@ Static request headers can be configured under `headers`; per-command header ove
 
 ## Troubleshooting
 **Not found errors (exit code 3)**
-- Check the resource ID is correct
-- Run the `list` command to see available items
+- Check the beer, brewery, or venue id/slug
+- Search first: `untappd-pp-cli search beer "…" --agent` or `untappd-pp-cli venue search "…" --agent`
+- For a place name, use `nearby --near "…" --agent` rather than guessing a venue id
 
 ---
 

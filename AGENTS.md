@@ -11,10 +11,11 @@ untappd-pp-cli doctor --json
 untappd-pp-cli agent-context --pretty
 ```
 
-Use runtime discovery instead of relying on a copied command list:
+Use runtime discovery instead of relying on a copied command list. `which` is seeded with beer / brewery / venue / nearby / lookup (not an empty generated index):
 
 ```bash
-untappd-pp-cli which "<capability>" --json
+untappd-pp-cli which "venues near my hotel" --json
+untappd-pp-cli which --json
 untappd-pp-cli <command> --help
 ```
 
@@ -35,14 +36,12 @@ Add `--agent` to command invocations for JSON, compact output, non-interactive d
 untappd-pp-cli <command> --agent
 ```
 
-Before running an unfamiliar command that may mutate remote state, inspect its help and prefer a dry run:
+This CLI is remote-read-only (public pages + published search). `--dry-run` still works for live GETs/POSTs to Untappd/Algolia. `--yes` is only for local destructive commands such as `profile delete` or `learnings forget` — it does not post a check-in. Do not run `import`.
 
 ```bash
 untappd-pp-cli <command> --help
 untappd-pp-cli <command> --dry-run --agent
 ```
-
-When a command requires confirmation, pass `--yes` explicitly only after the target, arguments, and side effects are clear. `--agent` does not imply `--yes`.
 
 ## Novel Command Data Sources
 
