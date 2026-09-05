@@ -1,0 +1,17 @@
+{
+  "schema_version": 2,
+  "id": "untappd-which-examples",
+  "applied_at": "2026-09-05",
+  "base_run_id": "20260905-010436-579600af",
+  "base_printing_press_version": "4.31.7",
+  "summary": "Replace leftover Printing Press which --help examples and Long text (stale tickets / send message) with beer and venue queries.",
+  "reason": "Generated which.go examples advertise capabilities this CLI does not have. Agents copy --help examples; hotel/beer queries match the seeded which index.",
+  "files": [
+    "internal/cli/which.go"
+  ],
+  "call_sites": [
+    "newWhichCmd("
+  ],
+  "validated_outcome": "which --help examples name venues near my hotel, beer rating, and on-menu beers",
+  "findings_addressed": ["pskill-which-examples"]
+}

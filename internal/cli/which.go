@@ -314,15 +314,15 @@ func newWhichCmd(flags *rootFlags) *cobra.Command {
 			"mcp:read-only":       "true",
 			"pp:typed-exit-codes": "0,2",
 		},
-		Long: `which resolves a natural-language capability query (for example, "search messages" or "stale tickets") to the best matching command from this CLI's curated feature index.
+		Long: `which resolves a natural-language capability query (for example, "venues near my hotel" or "beer rating") to the best matching command from this CLI's curated feature index.
 
 Exit codes:
   0  at least one match found
   2  no confident match - the query did not score against any indexed capability; fall back to '--help' or 'search' if this CLI has one. Machine output (--json/--csv/--plain/--quiet, or a pipe) still exits 2 and writes {"matches":[]} (or the equivalent empty table) to stdout.`,
 		SilenceUsage: true,
-		Example: `  untappd-pp-cli which "stale tickets"
-  untappd-pp-cli which "bottleneck"
-  untappd-pp-cli which --limit 1 "send message"
+		Example: `  untappd-pp-cli which "venues near my hotel"
+  untappd-pp-cli which "beer rating"
+  untappd-pp-cli which --limit 1 "on-menu beers"
   untappd-pp-cli which                                # list the full capability index`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if len(whichIndex) == 0 {

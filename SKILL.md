@@ -1,6 +1,6 @@
 ---
 name: pp-untappd
-description: "Untappd isn't just a check-in social network. It's a public beer intelligence layer: global ratings, style, ABV, IBU, and check-in volume that agents can query without the closed official API."
+description: "Query public Untappd beer, brewery, and venue intelligence without the closed official API: search beers (name, brewery, ABV, rating), list a brewery's beers, look up a tap list, and find venues or on-menu beers near a hotel or lat/lng (e.g. Elliot Park Hotel, Minneapolis). No friends feed, check-in posting, OAuth, or UTFB."
 author: "Paul Biondich"
 license: "Apache-2.0"
 argument-hint: "<command> [args] | install cli|mcp"
@@ -37,7 +37,22 @@ Readable Untappd beer intelligence for agents — public beer and brewery pages 
 
 ## When Not to Use This CLI
 
-Do not activate this CLI for requests that require creating, updating, deleting, publishing, commenting, upvoting, inviting, ordering, sending messages, booking, purchasing, or changing remote state. This printed CLI exposes read-only commands for inspection, export, sync, and analysis.
+Do not activate this CLI for friends-feed, personal check-ins, posting a check-in, OAuth, Untappd for Business (UTFB), paid tap lists, or anything that requires login. It cannot create, update, delete, comment, or change remote Untappd state. Do not run `import` — that generated verb talks about API create/upsert and is not a public-page workflow. Do not invent ratings or venue scores.
+
+This CLI is read-only public-page + published frontend search. Use it for beer/brewery lookup and “what’s worth drinking near this hotel / lat/lng.”
+
+## Unique Capabilities
+
+These are the verbs Homelab agents should reach for. `which "<capability>" --agent` resolves a plain-language ask onto this same list (exit 2 = no match; then use `--help`).
+
+- **`search beer "…"`** — beer matches with brewery, ABV, rating when published
+- **`beer get <id>`** / **`beer <id>`** — public beer page
+- **`lookup "…" "…" --brewery "…"`** — several tap-list names, sequential and polite
+- **`brewery search "…"`** / **`brewery <slug> beers`** — brewery catalog
+- **`nearby --near "Elliot Park Hotel, Minneapolis"`** — venues near a place (popularity ≠ rating)
+- **`venue search "…"`** / **`search venue "…"`** / **`venue search --near "…"`** — venue name or around a place
+- **`venue get <id>`** / **`venue <id>`** — address + lat/lng; venue `rating` is null unless Untappd publishes one
+- **`venue <id> top-beers`** — on-menu beers with global beer ratings when present
 
 ## Command Reference
 
@@ -60,6 +75,8 @@ Do not activate this CLI for requests that require creating, updating, deleting,
 **venue / nearby** — Places to drink near a hotel or lat/lng. Uses the public Algolia `venue` index (`_geoloc`) plus OSM Photon when the place is not already an Untappd venue.
 
 - `untappd-pp-cli venue search "Elliot Park" --agent`
+- `untappd-pp-cli search venue "Elliot Park" --agent` — same index via the search parent
+- `untappd-pp-cli venue search --near "Elliot Park Hotel, Minneapolis" --agent`
 - `untappd-pp-cli venue 8255451 --agent` — address and lat/lng; venue-level `rating` is null unless Untappd publishes one
 - `untappd-pp-cli venue 2714 top-beers --agent` — on-menu beers with global beer ratings when present
 - `untappd-pp-cli nearby --near "Elliot Park Hotel, Minneapolis" --radius-mi 2 --agent`
@@ -67,7 +84,9 @@ Do not activate this CLI for requests that require creating, updating, deleting,
 
 Nearby sorts by Untappd popularity (all-time check-in volume) by default (`--sort recent|distance`). That is not a star rating. Do not invent venue scores.
 
-Never invent a rating. If Untappd has no public score, `rating` is `null`, `rating_present` is `false`, and `rating_note` explains that.
+Never invent a rating. If Untappd has no public score, `rating` is `null` and `rating_present` is `false`. Venue rows almost always look like that — Untappd does not publish a venue star rating; `nearby` ranks by **popularity** (check-in volume). `rating_note` appears when the parser has a sentence to attach (venue pages do; a beer with a published score omits the empty note). Do not treat `null` as 0.
+
+`--agent` keeps beer/venue identity fields (brewery, ABV, address, lat/lng, popularity, distance_mi). `--select` is optional; if you pass it, only request fields you saw in a prior unfiltered response.
 
 
 ### Finding the right command
@@ -115,7 +134,7 @@ Agents should treat the CLI's path resolver as part of the runtime contract:
 - Use per-kind env vars only when a specific kind must diverge: `UNTAPPD_CONFIG_DIR`, `UNTAPPD_DATA_DIR`, `UNTAPPD_STATE_DIR`, `UNTAPPD_CACHE_DIR`.
 - Resolution order is per-kind env var, `--home`, `UNTAPPD_HOME`, XDG (`XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `XDG_STATE_HOME`, `XDG_CACHE_HOME`), then platform defaults.
 - `config` contains settings like `config.toml` and profiles. `data` contains `credentials.toml`, `data.db`, cookies, and auth sidecars. `state` contains persisted queries, jobs, and `teach.log`. `cache` contains regenerable HTTP/cache files.
-- Stored secrets live in `credentials.toml` under the data dir. Existing legacy `config.toml` secrets are read for compatibility and leave `config.toml` on the first auth write.
+- This CLI is no-auth. `credentials.toml` / cookie sidecars are Printing Press path-layout leftovers — do not look for an Untappd token. Identify the client with `UNTAPPD_CONTACT` in the User-Agent only.
 - Run `untappd-pp-cli doctor --fail-on warn` to surface path warnings. `agent-context` exposes a schema v4 `paths` block for agents that need the resolved dirs.
 - For MCP, pass relocation through the MCP host config. The MCP binary does not inherit CLI flags:
 
@@ -250,11 +269,12 @@ Graceful degradation: if `learnings confirm` is an unknown command, you are driv
 Teaching is unconditional. After resolving a query the store could not answer, background-teach the final resource mapping - no call-count threshold, no judging whether it was "worth" learning. The teach is the anchor of the loop: it triggers playbook synthesis for a family without a playbook, and same-referent phrasings fold into one family so near-duplicate teaches do not fragment the store. Fire it after assembling your user-facing response but BEFORE emitting it, with a shell `&` so the call returns immediately:
 
 ```bash
-untappd-pp-cli teach --query "<user's question>" --resource-type <type> --resource <id1> --resource <id2>
+untappd-pp-cli teach --query "<user's question>" --resource-type beer --resource 4384886
+untappd-pp-cli teach --query "<user's question>" --resource-type venue --resource 2714
 # (append shell `&` to background it)
 ```
 
-Silent on success. Errors only land in `teach.log` under the resolved state dir. Teach the **most specific** resource - if the user asked a broad question and you walked through parent records to find the specific answer, teach the leaf id, not the parent. The CLI uses seeded `entity_lookups` for cross-alias resolution at recall time, so a teach under one alias (e.g., "Niners") satisfies future queries under another alias (e.g., "49ers", "San Francisco") automatically.
+`--resource-type` for this CLI is `beer`, `brewery`, or `venue` (numeric Untappd ids). Silent on success. Errors only land in `teach.log` under the resolved state dir. Teach the **most specific** resource - if the user asked a broad question and you walked through parent records to find the specific answer, teach the leaf id, not the parent. The generated protocol’s sports aliases (Niners / Cards) are Printing Press boilerplate — do not teach NFL teams here. Teach beer/brewery/venue ids. The stock entity extractor splits place names (“Elliot Park Hotel”) into separate tokens; prefer teaching the venue id, not the hotel-name fragments.
 
 PII rule: teach the structural question with identifiers stripped - never include names, emails, phone numbers, account ids, or other personal identifiers in taught queries or notes. The CLI scans teach queries for obvious email/phone shapes and warns, but does not block; strip before teaching rather than relying on the warning.
 
@@ -357,7 +377,7 @@ A profile is a saved set of flag values, reused across invocations. Use it when 
 
 ```
 untappd-pp-cli profile save briefing --json
-untappd-pp-cli --profile briefing beer get mock-value
+untappd-pp-cli --profile briefing beer get 4384886
 untappd-pp-cli profile list --json
 untappd-pp-cli profile show briefing
 untappd-pp-cli profile delete briefing --yes
