@@ -1,0 +1,110 @@
+{
+  "api_name": "untappd",
+  "base_url": "https://untappd.com",
+  "description": "Untappd isn't just a check-in social network. It's a public beer intelligence layer: global ratings, style, ABV, IBU, and check-in volume that agents can query without the closed official API.",
+  "mcp_ready": "full",
+  "http_transport": "standard",
+  "auth": {
+    "type": "none"
+  },
+  "required_headers": [
+    {
+      "name": "User-Agent",
+      "value": "untappd-pp-cli/0.1.0 (+https://github.com/pbiondich/untappd-pp-cli; contact@example.com)"
+    }
+  ],
+  "tools": [
+    {
+      "name": "beer_get",
+      "description": "Fetch a public beer page by numeric id (301s to /b/{slug}/{id}) or pass a slug path. Required: id. Returns the Beer.",
+      "method": "GET",
+      "path": "/beer/{id}",
+      "no_auth": true,
+      "params": [
+        {
+          "name": "id",
+          "type": "string",
+          "location": "path",
+          "description": "Untappd beer id or slug (e.g. 4384886 or hop-butcher-for-the-world-cool-bay).",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "beer_search",
+      "description": "Search public beers via Untappd's frontend Algolia index (search-only key published on untappd.com/search). Required: query. Optional: hitsPerPage (default: 10). Returns array of BeerSearchHit.",
+      "method": "POST",
+      "path": "/1/indexes/beer/query",
+      "no_auth": true,
+      "params": [
+        {
+          "name": "query",
+          "type": "string",
+          "location": "body",
+          "description": "Beer search query.",
+          "required": true
+        },
+        {
+          "name": "hitsPerPage",
+          "type": "int",
+          "location": "body",
+          "description": "Max matches to return (polite default 10)."
+        }
+      ]
+    },
+    {
+      "name": "brewery_beers",
+      "description": "List beers on a public brewery beer page, including ratings when present. Required: slug. Returns array of BeerListItem.",
+      "method": "GET",
+      "path": "/{slug}/beer",
+      "no_auth": true,
+      "params": [
+        {
+          "name": "slug",
+          "type": "string",
+          "location": "path",
+          "description": "Brewery page slug (e.g. HopButcher).",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "brewery_get",
+      "description": "Fetch a public brewery page by numeric id (redirects to /{slug}) or slug. Required: id. Returns the Brewery.",
+      "method": "GET",
+      "path": "/brewery/{id}",
+      "no_auth": true,
+      "params": [
+        {
+          "name": "id",
+          "type": "string",
+          "location": "path",
+          "description": "Untappd brewery id or slug (e.g. 23570 or HopButcher).",
+          "required": true
+        }
+      ]
+    },
+    {
+      "name": "brewery_search",
+      "description": "Search public breweries via Untappd's frontend Algolia index. Required: query. Optional: hitsPerPage (default: 10). Returns array of BrewerySearchHit.",
+      "method": "POST",
+      "path": "/1/indexes/brewery/query",
+      "no_auth": true,
+      "params": [
+        {
+          "name": "query",
+          "type": "string",
+          "location": "body",
+          "description": "Brewery search query.",
+          "required": true
+        },
+        {
+          "name": "hitsPerPage",
+          "type": "int",
+          "location": "body",
+          "description": "Max matches to return."
+        }
+      ]
+    }
+  ]
+}

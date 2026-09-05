@@ -1,0 +1,31 @@
+{
+  "hits": [
+    {
+      "bid": 4384886,
+      "beer_abv": 6.5,
+      "beer_ibu": 0,
+      "beer_name": "Cool Bay",
+      "brewery_name": "Hop Butcher For The World",
+      "brewery_id": 23570,
+      "type_name": "IPA - New England / Hazy",
+      "beer_slug": "hop-butcher-for-the-world-cool-bay",
+      "rating_score": 4.04,
+      "rating_count": 2914,
+      "objectID": "4384886"
+    },
+    {
+      "bid": 111,
+      "beer_abv": 7.0,
+      "beer_ibu": 0,
+      "beer_name": "Unrated Experimental",
+      "brewery_name": "Example Brewery",
+      "brewery_id": 1,
+      "type_name": "IPA",
+      "beer_slug": "example-brewery-unrated-experimental",
+      "rating_score": 0,
+      "rating_count": 0,
+      "objectID": "111"
+    }
+  ],
+  "nbHits": 2
+}

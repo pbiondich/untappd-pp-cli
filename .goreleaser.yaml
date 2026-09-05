@@ -1,0 +1,51 @@
+version: 2
+project_name: untappd-pp-cli
+changelog:
+  disable: true
+builds:
+  - id: untappd-pp-cli
+    main: ./cmd/untappd-pp-cli
+    binary: untappd-pp-cli
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X github.com/pbiondich/untappd-pp-cli/internal/cli.version={{ .Version }}
+    targets:
+      - darwin_amd64
+      - darwin_arm64
+      - linux_amd64
+      - linux_arm64
+      - windows_amd64
+      - windows_arm64
+  - id: untappd-pp-mcp
+    main: ./cmd/untappd-pp-mcp
+    binary: untappd-pp-mcp
+    env:
+      - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
+    targets:
+      - darwin_amd64
+      - darwin_arm64
+      - linux_amd64
+      - linux_arm64
+      - windows_amd64
+      - windows_arm64
+archives:
+  - formats: [tar.gz]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+checksum:
+  name_template: checksums.txt
+brews:
+  - name: untappd-pp-cli
+    repository:
+      owner: paul-biondich
+      name: homebrew-tap
+    homepage: "https://github.com/paul-biondich/untappd-pp-cli"
+    description: "Untappd isn't just a check-in social network. It's a public beer intelligence layer: global ratings, style, ABV, IBU, and check-in volume that agents can query without the closed official API."
+    install: |
+      bin.install "untappd-pp-cli"
+      bin.install "untappd-pp-mcp"

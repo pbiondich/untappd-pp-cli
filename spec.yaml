@@ -1,0 +1,266 @@
+name: untappd
+description: "Readable Untappd beer intelligence for agents — public beer and brewery pages plus search, without the closed official developer API."
+cli_description: "Untappd isn't just a check-in social network. It's a public beer intelligence layer: global ratings, style, ABV, IBU, and check-in volume that agents can query without the closed official API."
+version: "0.1.0"
+base_url: "https://untappd.com"
+health_check_path: "/search"
+category: food-and-dining
+http_transport: standard
+
+required_headers:
+  - name: User-Agent
+    value: "untappd-pp-cli/0.1.0 (+https://github.com/pbiondich/untappd-pp-cli; contact@example.com)"
+
+auth:
+  type: none
+
+config:
+  format: toml
+  path: "~/.config/untappd-pp-cli/config.toml"
+
+learn:
+  ticker_patterns:
+    - "^[0-9]{3,8}$"
+  stopwords:
+    - beer
+    - brewery
+    - untappd
+  synonyms:
+    "hazy ipa": "ipa - new england / hazy"
+    "neipa": "ipa - new england / hazy"
+  entity_lookup_seeds:
+    brewery:
+      - canonical: Hop Butcher For The World
+        aliases: [hop butcher, hopbutcher, south loop brewing]
+
+resources:
+  beer:
+    description: "Public beer pages and search — name, brewery, style, ABV, IBU, global rating, rating count, description, check-in volume."
+    endpoints:
+      search:
+        method: POST
+        path: "/1/indexes/beer/query"
+        base_url: "https://9WBO4RQ3HO-dsn.algolia.net"
+        mutation: false
+        description: "Search public beers via Untappd's frontend Algolia index (search-only key published on untappd.com/search)."
+        example: "  untappd-pp-cli beer search --query \"Hop Butcher Put On the Glasses\" --agent"
+        happy_args: "--query=Cool Bay Hop Butcher;--limit=5"
+        body:
+          properties:
+            query:
+              type: string
+              required: true
+              description: "Beer search query."
+            hitsPerPage:
+              flag_name: limit
+              type: int
+              default: 10
+              description: "Max matches to return (polite default 10)."
+        response:
+          type: array
+          item: BeerSearchHit
+        response_path: hits
+        response_format: json
+      get:
+        method: GET
+        path: "/beer/{id}"
+        description: "Fetch a public beer page by numeric id (301s to /b/{slug}/{id}) or pass a slug path."
+        example: "  untappd-pp-cli beer 4384886 --agent"
+        happy_args: "id=4384886"
+        params:
+          - name: id
+            type: string
+            required: true
+            positional: true
+            description: "Untappd beer id or slug (e.g. 4384886 or hop-butcher-for-the-world-cool-bay)."
+        response_format: html
+        html_extract:
+          mode: page
+        response:
+          type: object
+          item: Beer
+
+  brewery:
+    description: "Public brewery search and beer lists with ratings when Untappd publishes them."
+    endpoints:
+      search:
+        method: POST
+        path: "/1/indexes/brewery/query"
+        base_url: "https://9WBO4RQ3HO-dsn.algolia.net"
+        mutation: false
+        description: "Search public breweries via Untappd's frontend Algolia index."
+        example: "  untappd-pp-cli brewery search --query \"Hop Butcher\" --agent"
+        happy_args: "--query=Hop Butcher;--limit=5"
+        body:
+          properties:
+            query:
+              type: string
+              required: true
+              description: "Brewery search query."
+            hitsPerPage:
+              flag_name: limit
+              type: int
+              default: 10
+              description: "Max matches to return."
+        response:
+          type: array
+          item: BrewerySearchHit
+        response_path: hits
+        response_format: json
+      get:
+        method: GET
+        path: "/brewery/{id}"
+        description: "Fetch a public brewery page by numeric id (redirects to /{slug}) or slug."
+        example: "  untappd-pp-cli brewery 23570 --agent"
+        happy_args: "id=23570"
+        params:
+          - name: id
+            type: string
+            required: true
+            positional: true
+            description: "Untappd brewery id or slug (e.g. 23570 or HopButcher)."
+        response_format: html
+        html_extract:
+          mode: page
+        response:
+          type: object
+          item: Brewery
+      beers:
+        method: GET
+        path: "/{slug}/beer"
+        description: "List beers on a public brewery beer page, including ratings when present."
+        example: "  untappd-pp-cli brewery HopButcher beers --agent"
+        happy_args: "slug=HopButcher"
+        params:
+          - name: slug
+            type: string
+            required: true
+            positional: true
+            description: "Brewery page slug (e.g. HopButcher)."
+        response_format: html
+        html_extract:
+          mode: links
+          link_prefixes: ["/b"]
+        response:
+          type: array
+          item: BeerListItem
+
+types:
+  BeerSearchHit:
+    fields:
+      - name: bid
+        type: int
+      - name: beer_name
+        type: string
+      - name: brewery_name
+        type: string
+      - name: brewery_id
+        type: int
+      - name: beer_slug
+        type: string
+      - name: type_name
+        type: string
+      - name: beer_abv
+        type: float
+      - name: beer_ibu
+        type: float
+      - name: rating_score
+        type: float
+      - name: rating_count
+        type: int
+  Beer:
+    fields:
+      - name: id
+        type: int
+      - name: slug
+        type: string
+      - name: name
+        type: string
+      - name: brewery
+        type: string
+      - name: brewery_slug
+        type: string
+      - name: style
+        type: string
+      - name: abv
+        type: float
+      - name: ibu
+        type: float
+      - name: rating
+        type: float
+      - name: rating_count
+        type: int
+      - name: rating_present
+        type: bool
+      - name: rating_note
+        type: string
+      - name: description
+        type: string
+      - name: url
+        type: string
+      - name: checkins_total
+        type: int
+      - name: checkins_unique
+        type: int
+      - name: checkins_monthly
+        type: int
+  BrewerySearchHit:
+    fields:
+      - name: brewery_id
+        type: int
+      - name: brewery_name
+        type: string
+      - name: brewery_page_url
+        type: string
+      - name: brewery_city
+        type: string
+      - name: brewery_state
+        type: string
+      - name: brewery_country
+        type: string
+      - name: brewery_type
+        type: string
+      - name: brewery_beer_count
+        type: int
+  Brewery:
+    fields:
+      - name: id
+        type: int
+      - name: slug
+        type: string
+      - name: name
+        type: string
+      - name: type
+        type: string
+      - name: location
+        type: string
+      - name: rating
+        type: float
+      - name: rating_count
+        type: int
+      - name: rating_present
+        type: bool
+      - name: beer_count
+        type: int
+      - name: url
+        type: string
+  BeerListItem:
+    fields:
+      - name: id
+        type: int
+      - name: name
+        type: string
+      - name: style
+        type: string
+      - name: abv
+        type: float
+      - name: ibu
+        type: float
+      - name: rating
+        type: float
+      - name: rating_count
+        type: int
+      - name: rating_present
+        type: bool
+      - name: url
+        type: string
