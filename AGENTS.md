@@ -36,7 +36,7 @@ Add `--agent` to command invocations for JSON, compact output, non-interactive d
 untappd-pp-cli <command> --agent
 ```
 
-This CLI is remote-read-only (public pages + published search). `--dry-run` still works for live GETs/POSTs to Untappd/Algolia. `--yes` is only for local destructive commands such as `profile delete` or `learnings forget` — it does not post a check-in. Do not run `import`.
+This CLI is remote-read-only (public pages + published search). `--dry-run` still works for live GETs/POSTs to Untappd/Algolia. `--yes` is only for local destructive commands such as `profile delete` or `learnings forget` — it does not post a check-in. `import` is hidden and stubs with a usage error.
 
 ```bash
 untappd-pp-cli <command> --help

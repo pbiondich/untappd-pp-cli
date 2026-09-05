@@ -1,0 +1,21 @@
+{
+  "schema_version": 2,
+  "id": "untappd-place-phrases",
+  "applied_at": "2026-09-05",
+  "base_run_id": "20260905-010436-579600af",
+  "base_printing_press_version": "4.31.7",
+  "summary": "Opt-in adjacent capitalized entity joining plus venue/nearby stopwords for teach/recall.",
+  "reason": "Stock extractor split Elliot Park Hotel into tokens; hotel/venue queries could not learn as a phrase. Sports aliases stay unused.",
+  "files": [
+    "internal/learn/entities/config.go",
+    "internal/learn/entities/extract.go",
+    "internal/cli/learn_init.go"
+  ],
+  "call_sites": [
+    "EnableAdjacentEntityPhrases(",
+    "appendJoinedEntity(",
+    "newLearnConfig("
+  ],
+  "validated_outcome": "Normalize(top beers near Elliot Park Hotel, Minneapolis) entities are Elliot Park Hotel and Minneapolis; default Extract still splits Will Smith",
+  "findings_addressed": ["pskill-place-extractor"]
+}

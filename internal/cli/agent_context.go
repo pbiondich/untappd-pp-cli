@@ -8,10 +8,10 @@ import (
 	"os"
 	"sort"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"github.com/pbiondich/untappd-pp-cli/internal/cliutil"
 	"github.com/pbiondich/untappd-pp-cli/internal/learn"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 // agentContextSchemaVersion is bumped on any breaking change to the JSON
@@ -181,6 +181,11 @@ func collectAgentCommands(c *cobra.Command) []agentContextCommand {
 	out := make([]agentContextCommand, 0, len(children))
 	for _, sub := range children {
 		if sub.Name() == "agent-context" {
+			continue
+		}
+		// Hidden leaves (e.g. stubbed import) stay off the agent surface.
+		// Hidden grouping parents still recurse so visible children remain.
+		if sub.Hidden && len(sub.Commands()) == 0 {
 			continue
 		}
 		entry := agentContextCommand{

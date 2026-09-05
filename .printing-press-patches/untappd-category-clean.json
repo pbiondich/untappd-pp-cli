@@ -1,0 +1,19 @@
+{
+  "schema_version": 2,
+  "id": "untappd-category-clean",
+  "applied_at": "2026-09-05",
+  "base_run_id": "20260905-010436-579600af",
+  "base_printing_press_version": "4.31.7",
+  "summary": "Normalize venue category strings so [Brewery] becomes Brewery.",
+  "reason": "Algolia category arrays fmt.Sprint as [Brewery] / [Burger Joint] in nearby --agent output.",
+  "files": [
+    "internal/untappd/venue.go",
+    "internal/untappd/venue_test.go"
+  ],
+  "call_sites": [
+    "categoryFrom(",
+    "cleanCategoryString("
+  ],
+  "validated_outcome": "NormalizeVenueHits maps [Brewery] to Brewery; array values join with /",
+  "findings_addressed": ["pskill-category-strings"]
+}
