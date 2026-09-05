@@ -20,6 +20,11 @@ var flagsWithValues = map[string]bool{
 	"--data-source":   true,
 	"--receipt-file":  true,
 	"--audit-dir":     true,
+	"--near":          true,
+	"--lat":           true,
+	"--lng":           true,
+	"--radius-mi":     true,
+	"--sort":          true,
 }
 
 var beerSubcommands = map[string]bool{
@@ -28,6 +33,10 @@ var beerSubcommands = map[string]bool{
 
 var brewerySubcommands = map[string]bool{
 	"get": true, "search": true, "beers": true, "help": true,
+}
+
+var venueSubcommands = map[string]bool{
+	"get": true, "search": true, "near": true, "nearby": true, "top-beers": true, "help": true,
 }
 
 // RewriteUserFacingArgs maps the documented agent verbs onto generated
@@ -72,6 +81,20 @@ func RewriteUserFacingArgs(argv []string) []string {
 			return append([]string{prog}, out...)
 		}
 		out := ensureQueryFlag(rest, "brewery", "search")
+		return append([]string{prog}, out...)
+	case "venue":
+		if len(pos) >= 3 && !venueSubcommands[rest[pos[1]]] && rest[pos[2]] == "top-beers" {
+			id := rest[pos[1]]
+			without := removeAt(rest, pos[2])
+			without[pos[1]] = "top-beers"
+			without = insertAt(without, pos[1]+1, id)
+			return append([]string{prog}, without...)
+		}
+		if len(pos) >= 2 && !venueSubcommands[rest[pos[1]]] && !strings.HasPrefix(rest[pos[1]], "-") {
+			out := insertAt(rest, pos[1], "get")
+			return append([]string{prog}, out...)
+		}
+		out := ensureQueryFlag(rest, "venue", "search")
 		return append([]string{prog}, out...)
 	default:
 		return argv

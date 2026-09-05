@@ -1,0 +1,105 @@
+{
+  "hits": [
+    {
+      "venue_id": 28880,
+      "venue_name": "Hell's Kitchen",
+      "venue_slug": "hells-kitchen",
+      "venue_primary_category": "Dining and Drinking",
+      "venue_full_address": "80 s 9th st minneapolis mn united states",
+      "venue_address": "80 S 9th St",
+      "venue_city": "Minneapolis",
+      "venue_state": "MN",
+      "venue_country": "United States",
+      "popularity": 5667,
+      "popularity_30": 14,
+      "is_closed": 0,
+      "has_beer": 1,
+      "_geoloc": {
+        "lat": 44.9748802,
+        "lng": -93.2732468
+      },
+      "objectID": "28880"
+    },
+    {
+      "venue_id": 23889,
+      "venue_name": "MacKenzie Pub",
+      "venue_slug": "mackenzie-pub",
+      "venue_primary_category": "",
+      "venue_full_address": "918 hennepin ave minneapolis mn united states",
+      "venue_address": "918 Hennepin Ave",
+      "venue_city": "Minneapolis",
+      "venue_state": "MN",
+      "venue_country": "United States",
+      "popularity": 12753,
+      "popularity_30": 12,
+      "is_closed": 0,
+      "has_beer": 1,
+      "_geoloc": {
+        "lat": 44.976326,
+        "lng": -93.2776566
+      },
+      "objectID": "23889"
+    },
+    {
+      "venue_id": 53739,
+      "venue_name": "The Bulldog Downtown",
+      "venue_slug": "the-bulldog-downtown",
+      "venue_primary_category": "Dining and Drinking",
+      "venue_full_address": "1111 hennepin ave minneapolis mn united states",
+      "venue_address": "1111 Hennepin Ave",
+      "venue_city": "Minneapolis",
+      "venue_state": "MN",
+      "venue_country": "United States",
+      "popularity": 4222,
+      "popularity_30": 6,
+      "is_closed": 0,
+      "has_beer": 1,
+      "_geoloc": {
+        "lat": 44.9749565,
+        "lng": -93.2795258
+      },
+      "objectID": "53739"
+    },
+    {
+      "venue_id": 5895,
+      "venue_name": "Pizza Luc\u00e9 Downtown",
+      "venue_slug": "pizza-luce-downtown",
+      "venue_primary_category": "",
+      "venue_full_address": "119 n 4th st minneapolis mn united states",
+      "venue_address": "119 N 4th St",
+      "venue_city": "Minneapolis",
+      "venue_state": "MN",
+      "venue_country": "United States",
+      "popularity": 5571,
+      "popularity_30": 4,
+      "is_closed": 0,
+      "has_beer": 1,
+      "_geoloc": {
+        "lat": 44.9816017,
+        "lng": -93.2737427
+      },
+      "objectID": "5895"
+    },
+    {
+      "venue_id": 2558258,
+      "venue_name": "Red Cow North Loop",
+      "venue_slug": "red-cow-north-loop",
+      "venue_primary_category": "",
+      "venue_full_address": "208 n 1st ave minneapolis mn united states",
+      "venue_address": "208 N 1st Ave",
+      "venue_city": "Minneapolis",
+      "venue_state": "MN",
+      "venue_country": "United States",
+      "popularity": 19849,
+      "popularity_30": 25,
+      "is_closed": 0,
+      "has_beer": 1,
+      "_geoloc": {
+        "lat": 44.9836578,
+        "lng": -93.2694092
+      },
+      "objectID": "2558258"
+    }
+  ],
+  "nbHits": 14
+}

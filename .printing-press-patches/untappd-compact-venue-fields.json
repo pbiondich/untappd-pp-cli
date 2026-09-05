@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "id": "untappd-compact-venue-fields",
+  "applied_at": "2026-09-05",
+  "base_run_id": "20260905-010436-579600af",
+  "base_printing_press_version": "4.31.7",
+  "summary": "keep venue geo and popularity fields under --agent --compact",
+  "reason": "Generated compact gravity omit address, lat/lng, popularity, and distance_mi, which are the load-bearing fields for nearby answers.",
+  "files": [
+    "internal/cli/helpers.go"
+  ],
+  "call_sites": [
+    "\"address\": true, \"popularity\": true, \"distance_mi\": true",
+    "\"address\", \"popularity\", \"distance_mi\""
+  ],
+  "validated_outcome": "nearby --agent keeps name, popularity, distance_mi, lat, lng",
+  "deferred_to_upstream": [
+    {
+      "feature": "Generator compact gravity should accept documented geo fields (lat, lng, address, distance_*) for location-shaped resources",
+      "reason": "Every food-and-dining nearby CLI will hit the same --compact strip."
+    }
+  ]
+}

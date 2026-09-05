@@ -18,6 +18,17 @@ untappd-pp-cli which "<capability>" --json
 untappd-pp-cli <command> --help
 ```
 
+Venue and nearby are novel live commands (`pp:data-source live`) on top of the printed beer/brewery tree:
+
+```bash
+untappd-pp-cli nearby --near "Elliot Park Hotel, Minneapolis" --agent
+untappd-pp-cli venue search "Elliot Park" --agent
+untappd-pp-cli venue <id> --agent
+untappd-pp-cli venue <id> top-beers --agent
+```
+
+Nearby popularity is check-in volume from Untappd's public venue index, not a star rating. Venue-level `rating` stays null unless the page publishes one. Menu `top-beers` may include per-beer global ratings.
+
 Add `--agent` to command invocations for JSON, compact output, non-interactive defaults, and no color:
 
 ```bash
