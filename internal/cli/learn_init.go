@@ -50,9 +50,31 @@ func newLearnConfig() *entities.Config {
 	}
 	cfg.RegisterStopwords(
 		"beer",
+		"beers",
 		"brewery",
 		"untappd",
+		"venue",
+		"venues",
+		"nearby",
+		"near",
+		"tap",
+		"taps",
+		"menu",
+		"rated",
+		"rating",
+		"ratings",
+		"popular",
+		"place",
+		"places",
+		"drink",
+		"drinking",
+		"closest",
+		"around",
+		"top",
 	)
+	// Keep "Elliot Park Hotel" as one entity. Do not register hotel/park
+	// as stopwords — those words are part of venue names.
+	cfg.EnableAdjacentEntityPhrases()
 	// Spec-declared same-referent synonym folds, registered on BOTH
 	// normalizers: the entities.Config drives the read side (recall
 	// family keys) and store.RegisterQuerySynonyms the write side
@@ -126,6 +148,7 @@ func learnResourceTypeFields() map[string][]string {
 	return map[string][]string{
 		"beer":    {"name", "title", "display_name", "full_name", "short_name", "label", "slug", "key", "code", "id", "address"},
 		"brewery": {"name", "title", "display_name", "full_name", "short_name", "label", "slug", "key", "code", "id", "address"},
+		"venue":   {"name", "title", "display_name", "full_name", "short_name", "label", "slug", "key", "code", "id", "address"},
 	}
 }
 

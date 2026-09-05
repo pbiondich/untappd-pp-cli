@@ -54,6 +54,7 @@ func Extract(query string, cfg *Config) Result {
 	}
 	rawTokens := strings.Fields(query)
 	result := Result{}
+	lastWasEntity := false
 
 	for i, raw := range rawTokens {
 		tok := trimPunct(raw)
@@ -65,6 +66,7 @@ func Extract(query string, cfg *Config) Result {
 		//    mis-treated as a capitalized non-stopword.
 		if cfg.matchesTicker(tok) {
 			result.Tickers = append(result.Tickers, tok)
+			lastWasEntity = false
 			continue
 		}
 
@@ -74,9 +76,11 @@ func Extract(query string, cfg *Config) Result {
 		//    explicit stopword registration overrides.
 		if len(tok) >= 2 && isAllCaps(tok) {
 			if cfg.isStopword(lower) {
+				lastWasEntity = false
 				continue
 			}
-			result.Entities = append(result.Entities, tok)
+			result.Entities = appendJoinedEntity(result.Entities, tok, lastWasEntity && cfg.joinAdjacentEntities)
+			lastWasEntity = !hasPhraseBreak(raw)
 			continue
 		}
 
@@ -84,21 +88,25 @@ func Extract(query string, cfg *Config) Result {
 		if isCapitalized(tok) {
 			// 3a. Sentence-initial capitalized stopword: drop.
 			if i == 0 && cfg.isStopword(lower) {
+				lastWasEntity = false
 				continue
 			}
 			// 3b. Mid-sentence capitalization or non-stopword leading
 			//     word: treat as entity.
-			result.Entities = append(result.Entities, tok)
+			result.Entities = appendJoinedEntity(result.Entities, tok, lastWasEntity && cfg.joinAdjacentEntities)
+			lastWasEntity = !hasPhraseBreak(raw)
 			continue
 		}
 
 		// 4. Stopword filter for lowercase tokens.
 		if cfg.isStopword(lower) {
+			lastWasEntity = false
 			continue
 		}
 
 		// 5. Everything else is a non-entity content token.
 		result.NonEntityTokens = append(result.NonEntityTokens, lower)
+		lastWasEntity = false
 	}
 
 	return result

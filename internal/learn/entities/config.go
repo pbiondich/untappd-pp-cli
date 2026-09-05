@@ -61,10 +61,11 @@ type synonymRule struct {
 // process. Configs are not safe for concurrent mutation; build once at
 // startup and read-share thereafter.
 type Config struct {
-	tickerPatterns []*regexp.Regexp
-	stopwords      map[string]struct{}
-	synonyms       map[string]string
-	synonymRules   []synonymRule
+	tickerPatterns       []*regexp.Regexp
+	stopwords            map[string]struct{}
+	synonyms             map[string]string
+	synonymRules         []synonymRule
+	joinAdjacentEntities bool
 }
 
 // NewConfig returns a Config preloaded with the domain-agnostic

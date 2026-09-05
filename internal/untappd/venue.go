@@ -97,7 +97,7 @@ func NormalizeVenueHits(raw json.RawMessage) ([]Venue, error) {
 			ID:           intFrom(hit, "venue_id"),
 			Name:         stringFrom(hit, "venue_name"),
 			Slug:         stringFrom(hit, "venue_slug"),
-			Category:     firstNonEmpty(stringFrom(hit, "venue_primary_category"), stringFrom(hit, "venue_categories")),
+			Category:     categoryFrom(hit),
 			Address:      firstNonEmpty(stringFrom(hit, "venue_address"), stringFrom(hit, "venue_full_address")),
 			City:         stringFrom(hit, "venue_city"),
 			State:        stringFrom(hit, "venue_state"),
@@ -419,6 +419,37 @@ func parseVenueJSONLD(s string) *venueLD {
 
 func htmlUnescape(s string) string {
 	return strings.NewReplacer(`\/`, `/`).Replace(s)
+}
+
+func categoryFrom(hit map[string]any) string {
+	return firstNonEmpty(cleanCategoryValue(hit["venue_primary_category"]), cleanCategoryValue(hit["venue_categories"]))
+}
+
+func cleanCategoryValue(v any) string {
+	switch t := v.(type) {
+	case nil:
+		return ""
+	case string:
+		return cleanCategoryString(t)
+	case []any:
+		parts := make([]string, 0, len(t))
+		for _, item := range t {
+			if s := cleanCategoryString(fmt.Sprint(item)); s != "" {
+				parts = append(parts, s)
+			}
+		}
+		return strings.Join(parts, " / ")
+	default:
+		return cleanCategoryString(fmt.Sprint(v))
+	}
+}
+
+func cleanCategoryString(s string) string {
+	s = strings.TrimSpace(s)
+	if len(s) >= 2 && s[0] == '[' && s[len(s)-1] == ']' {
+		s = strings.TrimSpace(s[1 : len(s)-1])
+	}
+	return strings.Join(strings.Fields(s), " ")
 }
 
 func cleanVenueAddress(s string) string {

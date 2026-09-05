@@ -6,6 +6,36 @@ import (
 	"testing"
 )
 
+func TestCleanCategoryString(t *testing.T) {
+	cases := []struct {
+		in, want string
+	}{
+		{"[Brewery]", "Brewery"},
+		{"[Brewery American Restaurant]", "Brewery American Restaurant"},
+		{"Dining and Drinking", "Dining and Drinking"},
+		{"", ""},
+	}
+	for _, tc := range cases {
+		if got := cleanCategoryString(tc.in); got != tc.want {
+			t.Fatalf("cleanCategoryString(%q)=%q want %q", tc.in, got, tc.want)
+		}
+	}
+	if got := cleanCategoryValue([]any{"Brewery", "American Restaurant"}); got != "Brewery / American Restaurant" {
+		t.Fatalf("array category=%q", got)
+	}
+}
+
+func TestNormalizeVenueHits_CleansStringifiedCategory(t *testing.T) {
+	raw := []byte(`{"hits":[{"venue_id":1,"venue_name":"Modist","venue_slug":"modist","venue_primary_category":"[Brewery]","_geoloc":{"lat":1,"lng":2}}]}`)
+	venues, err := NormalizeVenueHits(raw)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(venues) != 1 || venues[0].Category != "Brewery" {
+		t.Fatalf("category=%q venues=%+v", venues[0].Category, venues)
+	}
+}
+
 func TestNormalizeVenueHits(t *testing.T) {
 	venues, err := NormalizeVenueHits(fixture(t, "search-venue-algolia.json"))
 	if err != nil {

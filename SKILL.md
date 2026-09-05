@@ -37,7 +37,7 @@ Readable Untappd beer intelligence for agents — public beer and brewery pages 
 
 ## When Not to Use This CLI
 
-Do not activate this CLI for friends-feed, personal check-ins, posting a check-in, OAuth, Untappd for Business (UTFB), paid tap lists, or anything that requires login. It cannot create, update, delete, comment, or change remote Untappd state. Do not run `import` — that generated verb talks about API create/upsert and is not a public-page workflow. Do not invent ratings or venue scores.
+Do not activate this CLI for friends-feed, personal check-ins, posting a check-in, OAuth, Untappd for Business (UTFB), paid tap lists, or anything that requires login. It cannot create, update, delete, comment, or change remote Untappd state. `import` is hidden and errors with “not supported on this public-page CLI.” Do not invent ratings or venue scores.
 
 This CLI is read-only public-page + published frontend search. Use it for beer/brewery lookup and “what’s worth drinking near this hotel / lat/lng.”
 
@@ -274,7 +274,7 @@ untappd-pp-cli teach --query "<user's question>" --resource-type venue --resourc
 # (append shell `&` to background it)
 ```
 
-`--resource-type` for this CLI is `beer`, `brewery`, or `venue` (numeric Untappd ids). Silent on success. Errors only land in `teach.log` under the resolved state dir. Teach the **most specific** resource - if the user asked a broad question and you walked through parent records to find the specific answer, teach the leaf id, not the parent. The generated protocol’s sports aliases (Niners / Cards) are Printing Press boilerplate — do not teach NFL teams here. Teach beer/brewery/venue ids. The stock entity extractor splits place names (“Elliot Park Hotel”) into separate tokens; prefer teaching the venue id, not the hotel-name fragments.
+`--resource-type` for this CLI is `beer`, `brewery`, or `venue` (numeric Untappd ids). Silent on success. Errors only land in `teach.log` under the resolved state dir. Teach the **most specific** resource - if the user asked a broad question and you walked through parent records to find the specific answer, teach the leaf id, not the parent. The generated protocol’s sports aliases (Niners / Cards) are Printing Press boilerplate — do not teach NFL teams here. Teach beer/brewery/venue ids. Place names stay as phrases (`Elliot Park Hotel`); still prefer the venue id as the taught resource.
 
 PII rule: teach the structural question with identifiers stripped - never include names, emails, phone numbers, account ids, or other personal identifiers in taught queries or notes. The CLI scans teach queries for obvious email/phone shapes and warns, but does not block; strip before teaching rather than relying on the warning.
 

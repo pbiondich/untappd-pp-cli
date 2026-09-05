@@ -23,11 +23,17 @@ learn:
     - "^[0-9]{3,8}$"
   stopwords:
     - beer
+    - beers
     - brewery
     - venue
+    - venues
     - nearby
-    - hotel
+    - near
     - untappd
+    - top
+    - rated
+    - drink
+    - drinking
   synonyms:
     "hazy ipa": "ipa - new england / hazy"
     "neipa": "ipa - new england / hazy"
