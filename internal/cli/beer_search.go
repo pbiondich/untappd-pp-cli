@@ -15,6 +15,7 @@ import (
 func newBeerSearchCmd(flags *rootFlags) *cobra.Command {
 	var bodyQuery string
 	var bodyHitsPerPage int
+	var bodyLimit int
 	var stdinBody bool
 
 	cmd := &cobra.Command{
@@ -104,10 +105,9 @@ func newBeerSearchCmd(flags *rootFlags) *cobra.Command {
 			if flags.csv || flags.plain {
 				formatData = outputData
 			}
-			return printOutputWithFlagsMeta(cmd.OutOrStdout(), formatData, flags, map[string]any{"source": "live"}, map[string]bool{"name": true, "brewery": true, "rating": true, "rating_count": true, "url": true})
+			return printOutputWithFlagsMeta(cmd.OutOrStdout(), formatData, flags, map[string]any{"source": "live"}, map[string]bool{"name": true, "brewery": true, "style": true, "abv": true, "ibu": true, "rating": true, "rating_count": true, "url": true})
 		},
 	}
-	var bodyLimit int
 	cmd.Flags().StringVar(&bodyQuery, "query", "", "Beer search query.")
 	cmd.Flags().IntVar(&bodyLimit, "limit", 10, "Max matches to return (polite default 10).")
 	cmd.Flags().IntVar(&bodyHitsPerPage, "hits-per-page", 10, "Deprecated alias for --limit")

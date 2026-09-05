@@ -15,6 +15,7 @@ import (
 func newBrewerySearchCmd(flags *rootFlags) *cobra.Command {
 	var bodyQuery string
 	var bodyHitsPerPage int
+	var bodyLimit int
 	var stdinBody bool
 
 	cmd := &cobra.Command{
@@ -107,7 +108,6 @@ func newBrewerySearchCmd(flags *rootFlags) *cobra.Command {
 			return printOutputWithFlagsMeta(cmd.OutOrStdout(), formatData, flags, map[string]any{"source": "live"}, map[string]bool{"id": true, "name": true, "slug": true, "url": true})
 		},
 	}
-	var bodyLimit int
 	cmd.Flags().StringVar(&bodyQuery, "query", "", "Brewery search query.")
 	cmd.Flags().IntVar(&bodyLimit, "limit", 10, "Max matches to return.")
 	cmd.Flags().IntVar(&bodyHitsPerPage, "hits-per-page", 10, "Deprecated alias for --limit")

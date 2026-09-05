@@ -120,7 +120,7 @@ func printSearchResults(cmd *cobra.Command, flags *rootFlags, data []byte) error
 			return nil
 		}
 	}
-	return printOutputWithFlagsMeta(cmd.OutOrStdout(), data, flags, map[string]any{"source": "live"}, map[string]bool{"id": true, "name": true, "brewery": true, "rating": true, "rating_count": true, "url": true})
+	return printOutputWithFlagsMeta(cmd.OutOrStdout(), data, flags, map[string]any{"source": "live"}, map[string]bool{"id": true, "name": true, "brewery": true, "style": true, "abv": true, "ibu": true, "rating": true, "rating_count": true, "url": true})
 }
 
 func newLookupCmd(flags *rootFlags) *cobra.Command {

@@ -1944,6 +1944,7 @@ func isCompactGravityField(name string) bool {
 		"url", "email",
 		"price", "amount", "cost", "fare", "rate", "currency",
 		"rating", "score", "count",
+		"brewery", "style", "abv", "ibu",
 		"language", "locale", "country", "region", "city", "domain",
 		"created_at", "updated_at", "createdAt", "updatedAt", "date",
 		"version":
@@ -1999,6 +2000,7 @@ func compactListFields(items []map[string]any, documentedFields ...map[string]bo
 		"rate": true, "currency": true,
 		// Metrics
 		"rating": true, "score": true, "count": true,
+		"brewery": true, "style": true, "abv": true, "ibu": true,
 		// Locale / geo
 		"language": true, "locale": true, "country": true, "region": true,
 		"city": true, "domain": true,
